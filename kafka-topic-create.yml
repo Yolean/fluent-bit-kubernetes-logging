@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fluentbit-kafka-topic-create
+  namespace: default
+spec:
+  template:
+    metadata:
+      name: fluentbit-kafka-topic-create
+    spec:
+      restartPolicy: Never
+      activeDeadlineSeconds: 3600
+      containers:
+        - name: kafka-topic-client-new
+          image: solsson/kafka-topic-client@sha256:bd801d1cdb901cd0b358133e0a8a52337a7ac716e536759f1c2cbc1d95f69153
+          env:
+          - name: TOPIC_NAME
+            value: logs_default
+          - name: ZOOKEEPER_CONNECT
+            value: zookeeper.kafka:2181
+          - name: NUM_PARTITIONS
+            value: "2"
+          - name: NUM_REPLICAS
+            value: "1"
