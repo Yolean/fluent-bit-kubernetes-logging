@@ -14,6 +14,11 @@ ENV PATH "$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/us
 
 ENV GOPATH=/gocode
 
+RUN go get \
+ github.com/fluent/fluent-bit-go/output \
+ github.com/ugorji/go/codec \
+ github.com/Shopify/sarama
+
 # during development this is a local clone of https://github.com/Yolean/fluent-bit-kafka-output-plugin
 COPY fluent-bit-kafka-output-plugin /gocode/src/fluent-bit-kafka-output-plugin
 
@@ -27,6 +32,9 @@ RUN cd /gocode/src/fluent-bit-kafka-output-plugin \
 
 COPY fluent-bit.conf /fluent-bit/etc/
 COPY parsers.conf /fluent-bit/etc/
+
+# TODO os.Getenv("HOME")
+#ENV KAFKA_TOPIC=
 
 #CMD ["/fluent-bit/bin/fluent-bit", "-e", "/gocode/bin/fluent-bit-kafka-output-plugin", "-c", "/fluent-bit/etc/fluent-bit.conf"]
 CMD ["/fluent-bit/bin/fluent-bit", "-e", "/gocode/src/fluent-bit-kafka-output-plugin/out_kafka.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
