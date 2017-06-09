@@ -1,0 +1,46 @@
+version: '2.1'
+
+services:
+
+  zookeeper:
+    image: solsson/zookeeper
+  kafka:
+    image: solsson/kafka-persistent:0.10.1.0
+    links:
+      - zookeeper
+
+  kafka-topic-client:
+    image: solsson/kafka-topic-client
+    links:
+      - zookeeper
+      - kafka
+    environment:
+      TOPIC_NAME: "logs"
+
+  elasticsearch1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1
+    container_name: elasticsearch1
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g
+    #volumes:
+    #  - ./data/es1:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+
+  fluentbit:
+    build: ../docker-image
+    volumes:
+      - ./data/flb-log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers
+    environment:
+      - FLUENT_ELASTICSEARCH_HOST=elasticsearch
+    links:
+      - elasticsearch1:elasticsearch
+      - kafka
