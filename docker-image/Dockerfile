@@ -2,9 +2,6 @@ FROM fluent/fluent-bit:0.11.9
 MAINTAINER Eduardo Silva <eduardo@treasure-data.com>
 USER root
 
-COPY fluent-bit.conf /fluent-bit/etc/
-COPY parsers.conf /fluent-bit/etc/
-
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends make
 RUN apt-get install -y --no-install-recommends git
@@ -25,6 +22,11 @@ RUN cd /gocode/src/fluent-bit-kafka-output-plugin \
 
 RUN cd /gocode/src/fluent-bit-kafka-output-plugin \
   && make \
+  && shasum /gocode/src/fluent-bit-kafka-output-plugin/*.so \
   && shasum /gocode/bin/*
 
-CMD ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.conf"]
+COPY fluent-bit.conf /fluent-bit/etc/
+COPY parsers.conf /fluent-bit/etc/
+
+#CMD ["/fluent-bit/bin/fluent-bit", "-e", "/gocode/bin/fluent-bit-kafka-output-plugin", "-c", "/fluent-bit/etc/fluent-bit.conf"]
+CMD ["/fluent-bit/bin/fluent-bit", "-e", "/gocode/src/fluent-bit-kafka-output-plugin/out_kafka.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
