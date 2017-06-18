@@ -1,3 +1,4 @@
+# for local developments, ports mapped to host so local fluent-bit can connect
 version: '2.1'
 
 services:
@@ -8,6 +9,8 @@ services:
     image: solsson/kafka-persistent:0.10.1.0
     links:
       - zookeeper
+    ports:
+      - 9092:9092
 
   kafka-topic-client:
     image: solsson/kafka-topic-client
@@ -33,14 +36,3 @@ services:
     #  - ./data/es1:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
-
-  fluentbit:
-    build: ../docker-image
-    volumes:
-      - ./data/flb-log:/var/log
-      - /var/lib/docker/containers:/var/lib/docker/containers
-    environment:
-      - FLUENT_ELASTICSEARCH_HOST=elasticsearch
-    links:
-      - elasticsearch1:elasticsearch
-      - kafka

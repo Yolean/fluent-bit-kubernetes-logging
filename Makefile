@@ -19,3 +19,6 @@ extract_bin:
 	#docker cp fluent-bit-extract:/fluent-bit/etc .; \
 	docker kill fluent-bit-extract; \
 	docker rm fluent-bit-extract
+
+run:
+	./fluent-bit -e ./out_kafka/out_kafka.so -c ./testing.fluent-bit.conf
