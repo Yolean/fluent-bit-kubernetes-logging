@@ -17,6 +17,8 @@ var producer sarama.SyncProducer
 
 //export FLBPluginRegister
 func FLBPluginRegister(ctx unsafe.Pointer) int {
+  fmt.Println("kafka_out register")
+
   return output.FLBPluginRegister(ctx, "out_kafka", "out_kafka GO!")
 }
 
@@ -24,6 +26,8 @@ func FLBPluginRegister(ctx unsafe.Pointer) int {
 func FLBPluginInit(ctx unsafe.Pointer) int {
   var err error
   producer, err = sarama.NewSyncProducer(brokerList, nil)
+
+  fmt.Println("kafka_out init")
 
   if err != nil {
     fmt.Printf("Failed to start Sarama producer: %v\n", err)
@@ -42,27 +46,35 @@ func FLBPluginFlush(data unsafe.Pointer, length C.int, tag *C.char) int {
   var err error
   var enc_data []byte
 
+  fmt.Println("kafka_out flush")
+
   b = C.GoBytes(data, length)
   dec := codec.NewDecoderBytes(b, &h)
 
   // Iterate the original MessagePack array
-  for {
+  //for {
     // decode the msgpack data
     err = dec.Decode(&m)
     if err != nil {
       if err == io.EOF {
-        break
+        //break
+        fmt.Println("kafka_out flush EOF")
+        return output.FLB_ERROR
       }
       fmt.Printf("Failed to decode msgpack data: %v\n", err)
       return output.FLB_ERROR
     }
 
+    fmt.Println("kafka_out flush decoded")
+
     // select format until config files are available for fluentbit
     format := "json"
 
     if format == "json" {
+      fmt.Println("kafka_out flush json")
       enc_data, err = encode_as_json(m)
     } else if format == "msgpack" {
+      fmt.Println("kafka_out flush msgpack")
       enc_data, err = encode_as_msgpack(m)
     } else if format == "string" {
       // enc_data, err == encode_as_string(m)
@@ -72,13 +84,18 @@ func FLBPluginFlush(data unsafe.Pointer, length C.int, tag *C.char) int {
       return output.FLB_ERROR
     }
 
+    fmt.Println("kafka_out flush send")
+
     producer.SendMessage(&sarama.ProducerMessage {
       Topic: "logs_default",
       Key:   nil,
       Value: sarama.ByteEncoder(enc_data),
     })
-    
-  }
+
+    fmt.Println("kafka_out flush for end")
+
+  //}
+  fmt.Println("kafka_out flush return")
   return output.FLB_OK
 }
 
