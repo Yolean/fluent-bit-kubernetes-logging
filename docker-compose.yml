@@ -2,6 +2,12 @@
 version: '2.1'
 
 services:
+  testlog1:
+    image: alpine:3.6
+    volumes:
+      - ./log:/var/log
+    entrypoint: /bin/sh
+    command: ["-c", "while true; do date >> /var/log/testlog1.log; sleep 1; done"]
 
   zookeeper:
     image: solsson/zookeeper
