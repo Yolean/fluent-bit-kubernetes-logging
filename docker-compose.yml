@@ -24,7 +24,12 @@ services:
       - zookeeper
       - kafka
     environment:
-      TOPIC_NAME: "logs"
+      TOPIC_NAME: "logs_default"
+
+  kafka-logs-consumer:
+    image: solsson/kafka-persistent:0.10.1.0
+    entrypoint: ./bin/kafka-console-consumer.sh
+    command: ["--bootstrap-server", "localhost:9092", "--topic", "logs_default"]
 
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
   # you might need https://github.com/spujadas/elk-docker/issues/92#issuecomment-263152557
