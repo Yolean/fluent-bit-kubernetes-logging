@@ -15,6 +15,8 @@ import (
 var brokerList []string = []string{"localhost:9092"}
 var producer sarama.SyncProducer
 
+// note that this is based on https://github.com/fluent/fluent-bit-go/tree/api-0.11, not master
+
 //export FLBPluginRegister
 func FLBPluginRegister(ctx unsafe.Pointer) int {
   fmt.Println("kafka_out register")
