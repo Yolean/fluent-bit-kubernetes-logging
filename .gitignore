@@ -1,0 +1,3 @@
+fluent-bit
+out_kafka/out_kafka.h
+out_kafka/out_kafka.so

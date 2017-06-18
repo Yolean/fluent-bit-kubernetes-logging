@@ -15,4 +15,7 @@ clean:
 
 extract_bin:
 	docker run --name fluent-bit-extract -d --entrypoint sleep fluent/fluent-bit:0.11.9 60; \
-	docker cp fluent-bit-extract:/fluent-bit/bin/fluent-bit .
+	docker cp fluent-bit-extract:/fluent-bit/bin/fluent-bit .; \
+	#docker cp fluent-bit-extract:/fluent-bit/etc .; \
+	docker kill fluent-bit-extract; \
+	docker rm fluent-bit-extract
