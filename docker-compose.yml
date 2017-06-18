@@ -26,6 +26,8 @@ services:
     environment:
       TOPIC_NAME: "logs"
 
+  # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+  # you might need https://github.com/spujadas/elk-docker/issues/92#issuecomment-263152557
   elasticsearch1:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1
     container_name: elasticsearch1

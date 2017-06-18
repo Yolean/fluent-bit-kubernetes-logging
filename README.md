@@ -53,3 +53,14 @@ Your contribution on testing is highly appreciated, we aim to make logging cheap
 
 - [Mailing List / Google Group](https://groups.google.com/forum/#!forum/fluent-bit)
 - [Slack Channel #fluent-bit](http://slack.fluentd.org)
+
+## Local development for out_kafka
+
+```
+docker-compose up -d
+make all && make run
+curl -u elastic:changeme http://localhost:9200/_cat/health?v
+curl -u elastic:changeme http://localhost:9200/_cat/indices?v
+ESLOGINDEX=logstash-`date +%Y.%m.%d`
+curl -u elastic:changeme http://localhost:9200/_cat/indices?v -s | grep $ESLOGINDEX
+```
