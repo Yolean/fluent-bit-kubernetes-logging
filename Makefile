@@ -12,3 +12,7 @@ clean:
 	rm -rf *.so *.h *~
 
 # go build -buildmode=c-shared -o out_kafka.so out_kafka.go
+
+extract_bin:
+	docker run --name fluent-bit-extract -d --entrypoint sleep fluent/fluent-bit:0.11.9 60; \
+	docker cp fluent-bit-extract:/fluent-bit/bin/fluent-bit .
