@@ -33,6 +33,24 @@ func FLBPluginInit(ctx unsafe.Pointer) int {
     fmt.Printf("Failed to start Sarama producer: %v\n", err)
     return output.FLB_ERROR
   }
+  defer func() {
+      if err := producer.Close(); err != nil {
+          fmt.Printf("FAILED to close producer: %s\n", err)
+      }
+  }()
+
+  // test producer with sample code from https://godoc.org/github.com/Shopify/sarama#example-SyncProducer
+
+  msg := &sarama.ProducerMessage{Topic: "logs_default", Value: sarama.StringEncoder("testing 123")}
+  partition, offset, err := producer.SendMessage(msg)
+  if err != nil {
+      fmt.Printf("FAILED to send message: %s\n", err)
+      return output.FLB_ERROR
+  } else {
+      fmt.Printf("> message sent to partition %d at offset %d\n", partition, offset)
+  }
+
+  // end producer test
 
   return output.FLB_OK
 }
