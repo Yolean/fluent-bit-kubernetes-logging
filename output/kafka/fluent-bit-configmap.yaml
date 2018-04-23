@@ -19,6 +19,7 @@ data:
         HTTP_Port     2020
 
     @INCLUDE input-kubernetes.conf
+    @INCLUDE input-kubernetes-termination-log.conf
     @INCLUDE filter-kubernetes.conf
     @INCLUDE output-kafka.conf
 
@@ -29,6 +30,18 @@ data:
         Path              /var/log/containers/*.log
         Parser            docker
         DB                /var/log/flb_kube.db
+        Mem_Buf_Limit     5MB
+        Skip_Long_Lines   On
+        Refresh_Interval  10
+
+  input-kubernetes-termination-log.conf: |
+    [INPUT]
+        Name              tail
+        Tag               kube-termination.*
+        # https://kubernetes.io/docs/tasks/debug-application-cluster/determine-reason-pod-failure/
+        Path              /var/log/termination-log
+        #Parser            docker
+        #DB                /var/log/flb_kube.db
         Mem_Buf_Limit     5MB
         Skip_Long_Lines   On
         Refresh_Interval  10
