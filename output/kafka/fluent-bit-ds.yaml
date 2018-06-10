@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: fluent-bit
-        image: fluent/fluent-bit:0.13.3
+        image: sddmelb/fluent-bit:travis-106@sha256:b4c525ad7adba0e90b279dfdc1a0b29b1121d87858819a3c7071ffe03668c27a
         ports:
         - containerPort: 2020
         readinessProbe:
