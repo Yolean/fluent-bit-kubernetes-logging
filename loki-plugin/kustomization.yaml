@@ -40,3 +40,6 @@ patchesJson6902:
     - op: add
       path: /spec/template/spec/containers/0/args/-
       value: -distributor.replication-factor=3
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value: -memberlist.rejoin-interval=60s

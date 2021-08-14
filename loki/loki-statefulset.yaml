@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: loki
 spec:
   replicas: 1
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
   updateStrategy:
     type: RollingUpdate
   selector:
