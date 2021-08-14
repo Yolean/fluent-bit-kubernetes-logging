@@ -17,3 +17,13 @@ configMapGenerator:
   files:
   - outputs.conf=outputs-loki-plugin.conf
   - labelmap.json
+
+replicas:
+- name: loki
+  count: 3
+
+secretGenerator:
+- name: loki
+  behavior: merge
+  files:
+  - loki.yaml=distributed.config.yaml
