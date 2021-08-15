@@ -15,9 +15,14 @@ memberlist:
   join_members:
   - loki-headless
 
+distributor:
+  ring:
+    kvstore:
+      store: memberlist
+
 ingester:
   lifecycler:
-    address: 0.0.0.0
+    join_after: 10s
     ring:
       kvstore:
         store: memberlist
