@@ -1,0 +1,72 @@
+auth_enabled: false
+
+server:
+  http_listen_address: 0.0.0.0
+  http_listen_port: 3100
+  graceful_shutdown_timeout: 20s
+
+distributor:
+  ring:
+    kvstore:
+      store: memberlist
+
+ingester:
+  lifecycler:
+    ring:
+      kvstore:
+        store: memberlist
+      # replication_factor: 2
+      # heartbeat_timeout: 30s
+    # final_sleep: 0s
+
+memberlist:
+  # abort_if_cluster_join_fails: true
+
+  bind_addr:
+  - 0.0.0.0
+  bind_port: 7946
+
+  # https://github.com/grafana/loki/blob/v2.3.0/docs/sources/configuration/_index.md#use-environment-variables-in-the-configuration
+  #node_name: ${POD_NAME}.loki-headless.${POD_NAMESPACE}.svc.cluster.local
+  # With false here we still get a suffix on the node name according to startup logs
+  #randomize_node_name: false
+  join_members:
+  - dnssrvnoa+_gossip._tcp.loki-headless.${POD_NAMESPACE}.svc.cluster.local
+
+  # max_join_backoff: 1m
+  # max_join_retries: 10
+  # min_join_backoff: 1s
+
+schema_config:
+  configs:
+  - from: 2020-01-01
+    store: boltdb-shipper
+    object_store: s3
+    schema: v11
+    index:
+      prefix: index_
+      period: 24h
+
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /loki/index
+    cache_location: /loki/index_cache
+    shared_store: s3
+
+  aws:
+    bucketnames: loki
+    endpoint: minio-hl-svc:9000
+    access_key_id: minioadmin
+    secret_access_key: minioadmin
+    insecure: true
+    s3forcepathstyle: true
+
+limits_config:
+  enforce_metric_name: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+
+compactor:
+  working_directory: /data/compactor
+  shared_store: s3
+  compaction_interval: 5m
