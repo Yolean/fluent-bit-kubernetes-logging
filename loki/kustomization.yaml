@@ -3,7 +3,7 @@ kind: Kustomization
 
 images:
 - name: docker.io/grafana/loki
-  newTag: 2.3.0@sha256:bbf6dbf3264af939a541b6f3c014cba21a2bdc8f22cb7962eee7e9048b41ea5e
+  newTag: 2.4.0@sha256:413884a574a7ce52fd3adde46ba2ba1caaf441e17ae9e0de0c49c42f9dac61c4
 
 resources:
 - ../base

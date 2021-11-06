@@ -23,6 +23,8 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
+      - operator: Exists
+        effect: NoSchedule
       containers:
       - name: fluentbit
         image: docker.io/fluent/fluent-bit
