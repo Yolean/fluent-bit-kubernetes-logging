@@ -40,6 +40,18 @@ spec:
         ports:
         - name: http
           containerPort: 2020
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - |
+                echo "Stay running for 25 seconds to ingest shutdown logs of other pods ..."
+                sleep 25
+                # https://docs.fluentbit.io/manual/administration/dump-internals-signal#usage
+                # https://github.com/fluent/fluent-bit/blob/v1.8.9/src/fluent-bit.c#L513
+                kill `pidof fluent-bit`
         livenessProbe:
           httpGet:
             path: /
