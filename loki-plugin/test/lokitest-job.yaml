@@ -24,11 +24,11 @@ spec:
         - -cx
         - |
           alias curl='curl -f -s --retry-connrefused --retry 20'
-          curl http://loki-ingest:3100/ready
-          curl http://loki-ingest:3100/metrics | grep memberlist | grep _count | grep -v gauge
-          curl http://loki-ingest:3100/config
-          curl http://loki-query:3100/loki/api/v1/labels
-          curl http://loki-query:3100/loki/api/v1/label/pod/values
+          curl http://loki-distributor:3100/ready
+          curl http://loki-distributor:3100/metrics | grep memberlist | grep _count | grep -v gauge
+          curl http://loki-distributor:3100/config
+          curl http://loki-query-frontend:3100/loki/api/v1/labels
+          curl http://loki-query-frontend:3100/loki/api/v1/label/pod/values
           function stream1 {
             set +x
             log=$1; [ -n "$log" ] || log="Logged at $(date -Ins)"
@@ -37,8 +37,8 @@ spec:
           }
           stream1 | jq -c .
           t=$(date +%F'T'%T.%N'Z')
-          curl -H "Content-Type: application/json" -XPOST -w "%{http_code}\n" "http://loki-ingest:3100/loki/api/v1/push" --data-raw "$(stream1)"
-          export LOKI_ADDR=http://loki-query:3100
+          curl -H "Content-Type: application/json" -XPOST -w "%{http_code}\n" "http://loki-distributor:3100/loki/api/v1/push" --data-raw "$(stream1)"
+          export LOKI_ADDR=http://loki-query-frontend:3100
           logcli query '{job="lokitest"}' --from=$t
           # Test distriuted Loki, where ingestion might work while distribution doesn't; check if results differ between pods
           for POD_IP in $(getent hosts loki-headless | cut -d' ' -f1); do

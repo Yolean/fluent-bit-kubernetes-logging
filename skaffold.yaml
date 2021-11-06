@@ -1,0 +1,11 @@
+apiVersion: skaffold/v2beta25
+kind: Config
+deploy:
+  kustomize:
+    paths:
+    - github.com/Yolean/kubernetes-minio/standalone?ref=da676ae355532e22640cda121eb58cd727063c5f
+    - github.com/Yolean/kubernetes-minio/bucket-create?ref=da676ae355532e22640cda121eb58cd727063c5f
+    - github.com/Yolean/unhelm/logs/loki-distributed?ref=56f1d9b8a40c8cfedbb8b27b0f8e34f239d2d226
+    - ./loki-plugin/
+    - ./loki-plugin/test/
+    - github.com/Yolean/unhelm/logs/grafana?ref=56f1d9b8a40c8cfedbb8b27b0f8e34f239d2d226
