@@ -9,7 +9,7 @@ resources:
 
 images:
 - name: docker.io/grafana/fluent-bit-plugin-loki
-  newTag: 2.4.0-amd64@sha256:1b4f007631bc875c2bec3baeb2d0456b5091cdccc7b8a1843a387b82c8f7dce2
+  newTag: 2.5.0-amd64@sha256:9661313cc0bdb88c7aa89f23cf7de5832f01a44ae3868e7af20e1ba1f3b7e3d0
 
 patchesStrategicMerge:
 - fluentbit-loki-plugin.yaml
